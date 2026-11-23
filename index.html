@@ -65,9 +65,17 @@ a { color: var(--accent); }
 .sec-h p { color: var(--ink2); max-width: 70ch; }
 
 /* kontrolki */
-@media (min-width: 820px) { .controls { position: sticky; top: 0; z-index: 5; box-shadow: 0 6px 18px -14px rgba(0,0,0,.45); } }
-.ctl-grid { display: grid; gap: 12px 18px; grid-template-columns: 1fr; }
-@media (min-width: 820px) { .ctl-grid { grid-template-columns: 1.15fr 1fr; align-items: end; } }
+.controls { scroll-margin-top: 72px; }
+.controls.flash { box-shadow: 0 0 0 3px var(--accent); }
+@media (prefers-reduced-motion: no-preference) { .controls { transition: box-shadow .4s ease; } }
+/* telefon: rok | region + płeć | miejscowość; komputer: cztery pola w jednym wierszu */
+.ctl-grid { display: grid; gap: 12px 14px; grid-template-columns: minmax(0, 1fr) auto; grid-template-areas: "year year" "reg sex" "set set"; align-items: end; }
+.f-year { grid-area: year; } .f-reg { grid-area: reg; } .f-set { grid-area: set; } .f-sex { grid-area: sex; }
+@media (min-width: 900px) {
+  .ctl-grid { grid-template-columns: minmax(0, 1.15fr) minmax(0, 1.05fr) minmax(0, 1.3fr) auto; grid-template-areas: "year reg set sex"; }
+  .yr .step { display: none; }
+  .yr { grid-template-columns: auto minmax(0, 1fr); }
+}
 .fld { display: grid; gap: 6px; min-width: 0; }
 .fld > label, .fld > .lab { font-size: 13px; font-weight: 600; color: var(--ink2); }
 .yr { display: grid; grid-template-columns: auto auto 1fr auto; gap: 8px; align-items: center; }
@@ -82,7 +90,34 @@ select { width: 100%; font: 500 15px var(--font-b); padding: 9px 10px; border: 1
 .seg input { position: absolute; opacity: 0; width: 1px; height: 1px; }
 .seg label:has(input:checked) { background: var(--accent); color: var(--accent-ink); font-weight: 600; }
 .seg label:has(input:focus-visible) { outline: 2px solid var(--ink); outline-offset: -3px; }
-.row2 { display: grid; gap: 12px 18px; grid-template-columns: minmax(0,.7fr) minmax(0,1.3fr); }
+.weights { border-top: 1px solid var(--rule); padding-top: 10px; font-size: 14px; }
+.weights summary { color: var(--ink2); }
+.weights[open] summary { margin-bottom: 10px; }
+.weights .fld { max-width: 360px; }
+.weights p { margin-top: 8px; font-size: 13.5px; }
+.delta { font: 600 13.5px var(--font-b); color: var(--ink2); background: var(--fill); padding: 5px 9px; border-radius: 999px; justify-self: start; }
+.delta.up { color: var(--ink); background: color-mix(in srgb, var(--s3) 22%, var(--card)); }
+.delta.down { color: var(--ink); background: color-mix(in srgb, var(--accent) 16%, var(--card)); }
+.delta[hidden] { display: none; }
+.big b.pulse { color: var(--accent); }
+@media (prefers-reduced-motion: no-preference) { .big b { transition: color .6s ease; } .delta { animation: fadein .25s ease; } @keyframes fadein { from { opacity: 0; transform: translateY(-3px); } to { opacity: 1; transform: none; } } }
+/* pasek profilu */
+.pbar { position: fixed; top: 0; left: 0; right: 0; z-index: 15; background: var(--card); border-bottom: 1px solid var(--rule); box-shadow: 0 6px 18px -14px rgba(0,0,0,.5); transform: translateY(-110%); visibility: hidden; }
+.pbar.on { transform: none; visibility: visible; }
+@media (prefers-reduced-motion: no-preference) { .pbar { transition: transform .2s ease, visibility .2s; } }
+.pbar-in { max-width: 1080px; margin: 0 auto; padding: 8px 16px; display: flex; align-items: center; gap: 8px 12px; flex-wrap: wrap; }
+.pbar-who { font-size: 14px; font-weight: 600; min-width: 0; flex: 1 1 220px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.pbar-score { font: 750 15px var(--font-b); font-variant-numeric: tabular-nums; padding: 4px 10px; border-radius: 999px; background: var(--ink); color: var(--card); white-space: nowrap; }
+.pbar-btns { display: flex; gap: 6px; }
+.pbar-btns button { font: 600 13px var(--font-b); padding: 6px 10px; border-radius: 8px; border: 1px solid var(--rule); background: var(--bg); color: var(--ink); cursor: pointer; white-space: nowrap; }
+.pbar-btns button:disabled { opacity: .45; cursor: not-allowed; }
+.pbar-btns .pbar-edit { background: var(--accent); border-color: var(--accent); color: var(--accent-ink); }
+@media (max-width: 520px) { .pbar-in { gap: 6px 8px; } .pbar-who { flex-basis: 100%; font-size: 13px; } .pbar-btns { margin-left: auto; } }
+/* porównania i blok końcowy */
+.quick-main { display: flex; flex-wrap: wrap; gap: 8px; }
+.quick-main .btn:disabled { opacity: .45; cursor: not-allowed; }
+.share-end { background: var(--card); border: 2px solid var(--accent); }
+.share-end .share { gap: 10px; }
 .notice { font-size: 14px; background: var(--accent-soft); color: var(--ink); padding: 8px 12px; border-radius: 8px; border-left: 3px solid var(--accent); }
 :focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
 
@@ -182,6 +217,7 @@ th { font-weight: 600; color: var(--ink2); }
 .cmp-leg li { display: grid; grid-template-columns: auto minmax(0,1fr) auto auto; align-items: center; gap: 8px; }
 .sw { width: 12px; height: 12px; border-radius: 3px; display: inline-block; flex: none; margin-right: 4px; vertical-align: -1px; }
 .btn { font: 600 14px var(--font-b); padding: 9px 14px; border-radius: 8px; border: 1px solid var(--accent); background: var(--accent); color: var(--accent-ink); cursor: pointer; justify-self: start; }
+a.btn { text-decoration: none; display: inline-block; }
 .x, .ld { font: 600 12px var(--font-b); border: 1px solid var(--rule); background: var(--bg); color: var(--ink2); border-radius: 6px; padding: 2px 8px; cursor: pointer; }
 .x { padding: 0 8px; font-size: 16px; line-height: 20px; }
 
@@ -196,10 +232,47 @@ th { font-weight: 600; color: var(--ink2); }
 #tip { position: fixed; z-index: 20; max-width: 300px; background: var(--ink); color: var(--card); padding: 8px 10px; border-radius: 8px; font-size: 13px; line-height: 1.4; pointer-events: none; box-shadow: 0 6px 20px rgba(0,0,0,.25); }
 #tip .muted { color: var(--crisis); }
 footer { font-size: 13px; color: var(--ink3); padding: 0 2px; }
+.sr-only { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+.lbl-short { display: none; }
+@media (max-width: 480px) { .seg .lbl-full { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); } .seg .lbl-short { display: inline; } .f-sex .seg label { padding: 8px 14px; } }
+.share { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
+.btn-ghost { font: 600 14px var(--font-b); padding: 8px 12px; border-radius: 8px; border: 1px solid var(--rule); background: var(--bg); color: var(--ink); cursor: pointer; }
+.btn-ghost:hover { border-color: var(--ink3); }
+.btn-ghost:disabled { opacity: .45; cursor: not-allowed; }
+#shareStatus { font-size: 13.5px; color: var(--ink2); width: 100%; }
+#shareStatus input { width: 100%; margin-top: 4px; font: 13px var(--font-b); padding: 6px 8px; border: 1px solid var(--rule); border-radius: 6px; background: var(--bg); color: var(--ink); }
+.le-t { font: 700 11px var(--font-b); fill: var(--accent); }
+.per.on { stroke: var(--ink); stroke-width: 2; }
+.per:focus-visible { outline: none; stroke: var(--accent); stroke-width: 2.5; }
+.pp { border-left: 3px solid var(--accent); background: var(--bg); padding: 10px 12px; border-radius: 0 8px 8px 0; display: grid; gap: 4px; font-size: 14.5px; }
+.pp-h { display: flex; flex-wrap: wrap; gap: 4px 10px; align-items: baseline; }
+.pp-h b { font: 700 17px var(--font-d); font-stretch: 80%; }
+.pp-h span { font-size: 13px; color: var(--ink3); font-variant-numeric: tabular-nums; }
+.quick { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
+.quick > span { font-size: 13px; font-weight: 600; color: var(--ink2); }
+.gdp-ctl { display: flex; flex-wrap: wrap; gap: 10px 18px; align-items: center; justify-content: space-between; }
+.gdp-ctl label { font-size: 13px; font-weight: 600; color: var(--ink2); display: flex; gap: 8px; align-items: center; }
+.gdp-ctl select { width: auto; padding: 6px 8px; font-size: 14px; }
+.modal { position: fixed; inset: 0; z-index: 30; background: rgba(10,12,14,.6); display: grid; place-items: center; padding: 16px; }
+.modal[hidden] { display: none; }
+.modal-box { background: var(--card); border-radius: var(--r); padding: 16px; display: grid; gap: 12px; max-width: 760px; width: 100%; max-height: 100%; overflow: auto; }
+.modal-box img { width: 100%; height: auto; border: 1px solid var(--rule); border-radius: 6px; }
+.modal-row { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; justify-content: space-between; }
 @media (prefers-reduced-motion: no-preference) { .bar-f { transition: width .35s ease; } }
 </style>
 </head>
 <body>
+<div class="pbar" id="pbar" aria-label="Wybrany profil">
+  <div class="pbar-in">
+    <span class="pbar-who" id="pbarWho"></span>
+    <span class="pbar-score" id="pbarScore"></span>
+    <span class="pbar-btns">
+      <button type="button" id="pbarMinus" aria-label="Rok wcześniej">−1 rok</button>
+      <button type="button" id="pbarPlus" aria-label="Rok później">+1 rok</button>
+      <button type="button" class="pbar-edit" id="pbarEdit">Zmień</button>
+    </span>
+  </div>
+</div>
 <div class="wrap">
   <header class="mast">
     <p class="eyebrow">Historia gospodarcza Polski · roczniki 1900–2010</p>
@@ -207,9 +280,9 @@ footer { font-size: 13px; color: var(--ink3); padding: 0 2px; }
     <p class="lede">Wybierz rok i miejsce urodzenia. Aplikacja zestawia dane o gospodarce, szkołach, zdrowiu i wojnach, żeby pokazać, na ile historia sprzyjała awansowi społecznemu i rozwojowi kogoś takiego jak ty.</p>
   </header>
 
-  <section class="card controls" aria-label="Wybór profilu">
+  <section class="card controls" id="controls" aria-label="Wybór profilu">
     <div class="ctl-grid">
-      <div class="fld">
+      <div class="fld f-year">
         <label for="byNum">Rok urodzenia</label>
         <div class="yr">
           <button class="step" id="byMinus" type="button" aria-label="Rok wcześniej">−</button>
@@ -218,11 +291,11 @@ footer { font-size: 13px; color: var(--ink3); padding: 0 2px; }
           <button class="step" id="byPlus" type="button" aria-label="Rok później">+</button>
         </div>
       </div>
-      <div class="fld">
+      <div class="fld f-reg">
         <label for="reg">Region</label>
         <select id="reg"></select>
       </div>
-      <div class="fld">
+      <div class="fld f-set">
         <span class="lab" id="setLab">Miejscowość</span>
         <div class="seg" role="radiogroup" aria-labelledby="setLab">
           <label><input type="radio" name="set" id="set-wies" value="wies">Wieś</label>
@@ -230,17 +303,11 @@ footer { font-size: 13px; color: var(--ink3); padding: 0 2px; }
           <label><input type="radio" name="set" id="set-duze" value="duze">Duże miasto</label>
         </div>
       </div>
-      <div class="row2">
-        <div class="fld">
-          <span class="lab" id="sexLab">Płeć</span>
-          <div class="seg" role="radiogroup" aria-labelledby="sexLab">
-            <label><input type="radio" name="sex" id="sex-k" value="k">K</label>
-            <label><input type="radio" name="sex" id="sex-m" value="m">M</label>
-          </div>
-        </div>
-        <div class="fld">
-          <label for="preset">Co liczysz jako awans</label>
-          <select id="preset"></select>
+      <div class="fld f-sex">
+        <span class="lab" id="sexLab">Płeć</span>
+        <div class="seg" role="radiogroup" aria-labelledby="sexLab">
+          <label><input type="radio" name="sex" id="sex-k" value="k" aria-label="Kobieta"><span class="lbl-full">Kobieta</span><span class="lbl-short" aria-hidden="true">K</span></label>
+          <label><input type="radio" name="sex" id="sex-m" value="m" aria-label="Mężczyzna"><span class="lbl-full">Mężczyzna</span><span class="lbl-short" aria-hidden="true">M</span></label>
         </div>
       </div>
     </div>
@@ -248,14 +315,21 @@ footer { font-size: 13px; color: var(--ink3); padding: 0 2px; }
   </section>
 
   <section class="card" aria-labelledby="sumH">
-    <h2 id="sumH" class="sr-only" style="position:absolute;left:-9999px">Wynik</h2>
+    <h2 id="sumH" class="sr-only">Wynik</h2>
     <div class="sum">
       <div class="score">
-        <p class="who" id="who"></p>
-        <div class="big"><b id="idx">0</b><span>/ 100 · indeks szans</span></div>
-        <span class="verdict" id="idxVerdict"></span>
+        <p class="who" id="who">Liczę wynik dla wybranego profilu…</p>
+        <div class="big"><b id="idx" aria-live="polite">—</b><span>/ 100 · indeks szans</span></div>
+        <span class="verdict" id="idxVerdict">…</span>
+        <span class="delta" id="idxDelta" role="status" hidden></span>
         <p class="muted" id="rank"></p>
         <div class="why" id="why"></div>
+        <details class="weights" id="weightsBox">
+          <summary>Zmień wagi, jeśli inaczej definiujesz awans <span class="muted" id="presetNow"></span></summary>
+          <div class="fld"><label for="preset">Co liczysz jako awans</label><select id="preset"></select></div>
+          <p class="muted">Wagi decydują, ile każda z siedmiu składowych waży w indeksie. Pełna tabela wag jest w sekcji „Jak to jest policzone”.</p>
+        </details>
+        <noscript><p class="notice">Ta strona potrzebuje JavaScriptu, żeby policzyć wynik.</p></noscript>
       </div>
       <div class="bars" id="bars" aria-label="Składowe indeksu"></div>
     </div>
@@ -269,18 +343,22 @@ footer { font-size: 13px; color: var(--ink3); padding: 0 2px; }
   </section>
 
   <section class="card" aria-labelledby="lifeH">
-    <div class="sec-h"><h2 id="lifeH">Oś życia</h2><p>Na jakie epoki przypadły kolejne etapy życia, od urodzenia do 80. roku życia. Dotknij epoki, żeby zobaczyć opis.</p></div>
+    <div class="sec-h"><h2 id="lifeH">Oś życia</h2><p>Na jakie epoki przypadły kolejne etapy życia, od urodzenia do 80. roku życia. Czerwona linia to przeciętne trwanie życia noworodka z tego rocznika i tej płci.</p><p class="muted" id="lifeHint"></p></div>
     <div class="svgbox" id="lifeSvg"></div>
-    <div class="legend-row"><span class="lg"><i style="background:var(--band2)"></i>zwykłe lata</span><span class="lg"><i style="background:var(--crisis)"></i>kryzys</span><span class="lg"><i style="background:repeating-linear-gradient(45deg,var(--war) 0 3px,var(--band1) 3px 5px)"></i>wojna</span><span class="lg"><i style="border:1px dashed var(--ink3)"></i>prognoza</span></div>
+    <div class="pp" id="perPanel" aria-live="polite"></div>
+    <div class="legend-row"><span class="lg"><i style="background:var(--band2)"></i>zwykłe lata</span><span class="lg"><i style="background:var(--crisis)"></i>kryzys</span><span class="lg"><i style="background:repeating-linear-gradient(45deg,var(--war) 0 3px,var(--band1) 3px 5px)"></i>wojna</span><span class="lg"><i style="border:1px dashed var(--ink3)"></i>prognoza</span><span class="lg"><i style="background:var(--accent);width:3px;height:14px"></i>przeciętne trwanie życia</span></div>
     <ul class="stages" id="stages"></ul>
     <div id="notesWrap"><h3 style="margin-bottom:6px">Warto wiedzieć o tym roczniku</h3><ul class="notes" id="notes"></ul></div>
   </section>
 
   <section class="card" aria-labelledby="gdpH">
-    <div class="sec-h"><h2 id="gdpH">Gospodarka w trakcie twojego życia</h2><p>PKB na osobę w dolarach z 2011 r. (parytet siły nabywczej). Niebieskie tło to lata twojego życia; linie przerywane to interpolacja między latami z danymi, a po 2022 r. prognoza.</p></div>
-    <div class="legend-row"><span class="lg"><i style="background:var(--s1);height:3px"></i>Polska</span><span class="lg"><i style="background:var(--s2);height:3px"></i>Niemcy (punkt odniesienia)</span></div>
+    <div class="sec-h"><h2 id="gdpH">Gospodarka w trakcie twojego życia</h2><p>PKB na osobę w dolarach z 2011 r. (parytet siły nabywczej). Niebieskie tło to lata twojego życia. Linie przerywane to interpolacja między latami z danymi, a od 2026 r. prognoza. Lata 2023–2025 to dynamika PKB według GUS.</p></div>
+    <div class="gdp-ctl">
+      <div class="legend-row"><span class="lg"><i style="background:var(--s1);height:3px"></i>Polska</span><span class="lg"><i style="background:var(--s2);height:3px"></i><span id="benchLeg">Niemcy</span></span></div>
+      <label for="bench">Kraj odniesienia <select id="bench"></select></label>
+    </div>
     <div class="svgbox" id="gdpSvg"></div>
-    <details><summary>Dane w tabeli</summary><div class="tbl"><table id="gdpTable"></table></div><p class="muted" style="margin-top:6px">Źródło: Maddison Project Database 2023, za Our World in Data. Wartości w dolarach z 2011 r. na osobę.</p></details>
+    <details><summary>Dane w tabeli</summary><div class="tbl"><table id="gdpTable"></table></div><p class="muted" style="margin-top:6px">Źródło: Maddison Project Database 2023, za Our World in Data; 2025: dynamika GUS. Wartości w dolarach z 2011 r. na osobę.</p></details>
   </section>
 
   <section class="card" aria-labelledby="heatH">
@@ -290,11 +368,32 @@ footer { font-size: 13px; color: var(--ink3); padding: 0 2px; }
   </section>
 
   <section class="card" aria-labelledby="cmpH">
-    <div class="sec-h"><h2 id="cmpH">Porównaj losy</h2><p>Twój wybór zawsze jest na niebiesko. Dodaj go do porównania, zmień rok lub miejsce i zobacz różnicę. Na start dwa przykłady.</p></div>
+    <div class="sec-h"><h2 id="cmpH">Porównaj losy</h2><p id="cmpLead">Na start porównanie z pokoleniem rodziców i dziadków w tym samym miejscu. Twój wybór jest zawsze na niebiesko.</p></div>
+    <div class="quick-main" role="group" aria-label="Porównaj jednym kliknięciem">
+      <button class="btn" type="button" data-quick="parents">Pokolenie rodziców</button>
+      <button class="btn" type="button" data-quick="grand">Pokolenie dziadków</button>
+      <button class="btn" type="button" data-quick="place">Ta sama osoba w dużym mieście</button>
+    </div>
+    <div class="quick" role="group" aria-label="Więcej porównań">
+      <span>Więcej:</span>
+      <label class="sr-only" for="cmpRegion">Ten sam rocznik w innym regionie</label>
+      <select id="cmpRegion" class="btn-ghost" style="width:auto"></select>
+      <button class="btn-ghost" type="button" data-quick="sex">Druga płeć</button>
+      <button class="btn-ghost" type="button" data-quick="children">Pokolenie dzieci</button>
+      <button class="btn-ghost" id="addCmp" type="button">Dodaj obecny wybór</button>
+    </div>
     <ul class="cmp-leg" id="cmpLegend"></ul>
-    <button class="btn" id="addCmp" type="button">Dodaj obecny do porównania</button>
     <div class="svgbox" id="cmpSvg"></div>
     <details><summary>Porównanie w tabeli</summary><div class="tbl"><table id="cmpTable"></table></div></details>
+  </section>
+
+  <section class="card share-end" aria-labelledby="shareH">
+    <div class="sec-h"><h2 id="shareH">Udostępnij swój wynik</h2><p id="shareLead">Karta z wynikiem do wysłania albo wrzucenia do sieci i link, który otwiera dokładnie ten profil.</p></div>
+    <div class="share">
+      <button class="btn" id="makeCard" type="button">Zapisz kartę wyniku (PNG)</button>
+      <button class="btn-ghost" id="copyLink" type="button">Kopiuj link do tego profilu</button>
+      <p id="shareStatus" role="status"></p>
+    </div>
   </section>
 
   <section class="card method" aria-labelledby="metH">
@@ -304,13 +403,13 @@ footer { font-size: 13px; color: var(--ink3); padding: 0 2px; }
       <div>
         <h3 style="margin-bottom:6px">Siedem składowych (każda 0–100)</h3>
         <ul>
-          <li><b>Edukacja</b>: szansa na dyplom uczelni dla rocznika (kalibracja do NSP 2021, Eurostat i GUS), korygowana o typ miejscowości, płeć i region; dla roczników sprzed 1935 r. także ryzyko analfabetyzmu według spisu z 1931 r.</li>
+          <li><b>Edukacja</b>: szansa na dyplom uczelni dla rocznika (kalibracja do NSP 2021 i danych GUS dla 25–34-latków), korygowana o typ miejscowości, płeć i region; dla roczników sprzed 1935 r. także ryzyko analfabetyzmu według spisu z 1931 r. w podziale na województwo, płeć oraz miasto i wieś, przeliczone na rocznik według wieku.</li>
           <li><b>Awans strukturalny</b>: spadek udziału pracujących w rolnictwie w wieku 15–40 lat (nowe miejsca pracy poza wsią) i wzrost odsetka dyplomów względem pokolenia rodziców.</li>
-          <li><b>Dynamika gospodarki</b>: średni roczny wzrost PKB na osobę w wieku 18–45 lat (Maddison).</li>
-          <li><b>Dobrobyt</b>: średni poziom PKB na osobę w wieku 20–60 lat, w skali logarytmicznej.</li>
+          <li><b>Gospodarka i praca</b>: średni roczny wzrost PKB na osobę w wieku 18–45 lat (Maddison, od 2023 r. GUS), pomniejszony o 2 pkt za każdy punkt procentowy bezrobocia rejestrowanego powyżej 6% w wieku 18–26 lat (dane GUS od 1990 r.).</li>
+          <li><b>Dobrobyt</b>: średni poziom PKB na osobę w wieku 20–60 lat, w skali logarytmicznej. Od 1990 r. z mnożnikiem województwa (PKB na mieszkańca 2022, Polska=100, w potędze 0,6), wprowadzanym stopniowo do 1995 r.</li>
           <li><b>Bezpieczeństwo</b>: lata wojen, okupacji i terroru ważone wiekiem i natężeniem w regionie.</li>
           <li><b>Zdrowie na starcie</b>: przeciętne trwanie życia noworodka w roku urodzenia (Gapminder, GUS), z różnicą między płciami.</li>
-          <li><b>Swoboda wyboru</b>: uproszczona ocena modelu dla kolejnych okresów ustrojowych: swoboda wyjazdu, zrzeszania się i wyboru zawodu w wieku 15–45 lat.</li>
+          <li><b>Swoboda wyboru</b>: uproszczona ocena modelu dla kolejnych okresów ustrojowych: swoboda wyjazdu, zrzeszania się i wyboru zawodu w wieku 15–45 lat. Najwyższa od 2004 r., gdy otworzyły się rynki pracy UE.</li>
         </ul>
       </div>
       <div>
@@ -319,25 +418,37 @@ footer { font-size: 13px; color: var(--ink3); padding: 0 2px; }
         <h3 style="margin:14px 0 6px">Ograniczenia</h3>
         <ul>
           <li>Dane historyczne dotyczą Polski w różnych granicach; PKB według Maddisona liczony jest dla obecnego terytorium.</li>
-          <li>Odsetek analfabetów w 1931 r. dla części województw centralnych i wschodnich to szacunek z danych z 1921 r. i ogólnego tempa spadku.</li>
-          <li>Mnożniki dla typu miejscowości, płci i natężenia wojen to założenia modelu oparte na historiografii, nie gotowe statystyki.</li>
-          <li>Po 2022 r. PKB to prognoza (2,5% rocznie do 2035 r., potem 1,5%), a odsetek dyplomów dla roczników po 2000 r. przyjęto na poziomie 47%.</li>
-          <li>Regionalne różnice zamożności po 1990 r. nie wchodzą do składowej Dobrobyt; widać je pośrednio w Edukacji.</li>
+          <li>Edukacja mierzy dostępność dyplomu, a nie jego zwrot na rynku pracy. W czasie boomu edukacyjnego wartość dyplomu malała i zależała od kierunku, a dla wielu osób, zwłaszcza mężczyzn z małych miast, kluczowe było wykształcenie techniczne lub zawodowe. Model tego nie rozróżnia.</li>
+          <li>Mnożniki dla typu miejscowości, płci i natężenia wojen to założenia modelu oparte na historiografii, nie gotowe statystyki. Duże miasto poza Warszawą ma w 1931 r. analfabetyzm miast województwa × 0,8.</li>
+          <li>Regionalny mnożnik Dobrobytu przyjmuje strukturę PKB województw z 2022 r. dla całego okresu od 1990 r. Bezrobocie liczone jest dla całego kraju; nie obejmuje ukrytego bezrobocia w PRL ani przeludnienia wsi w II RP.</li>
+          <li>Emigracja po 2004 r. podnosi składową Swoboda wyboru, ale model nie liczy osobno, ilu osobom z danego rocznika wyjazd przyniósł awans.</li>
+          <li>PKB 2023–2025 to realna dynamika PKB ogółem według GUS, użyta jako przybliżenie dynamiki na osobę. Od 2026 r. prognoza: 2,5% rocznie do 2035 r., potem 1,5%. Odsetek dyplomów dla roczników po 2000 r. przyjęto na poziomie 47%.</li>
+          <li>Przeciętne trwanie życia noworodka to miara okresowa z roku urodzenia, obejmująca zgony dzieci; nie jest to rzeczywista długość życia rocznika.</li>
         </ul>
       </div>
     </div>
     <h3>Źródła</h3>
     <ul class="src">
-      <li>PKB na osobę: Maddison Project Database 2023, za <a href="https://github.com/owid/co2-data">Our World in Data (owid/co2-data)</a>.</li>
-      <li>Trwanie życia i umieralność dzieci: Gapminder, za <a href="https://github.com/owid/owid-datasets">Our World in Data (owid-datasets)</a>; trwanie życia 1931–32: 48,2 lat mężczyźni, 51,4 lat kobiety (<a href="https://core.ac.uk/download/80534728.pdf">opracowanie na podstawie tablic GUS</a>); 2024: <a href="https://biznes.interia.pl/gospodarka/news-wiadomo-ile-srednio-zyja-polacy-udalo-sie-odwrocic-negatywny,nId,8004989">GUS za Interia</a>.</li>
-      <li>Wykształcenie: <a href="https://stat.gov.pl/files/gfx/portalinformacyjny/pl/defaultaktualnosci/6494/2/1/1/ludnosc_wedlug_cech_spolecznych_-_wyniki_wstepne_nsp_2021.pdf">GUS, NSP 2021 – wyniki wstępne</a> (23,1% z dyplomem; miasta 27,4%, wieś 16,6%); województwa: <a href="https://www.polskawliczbach.pl/miasta_z_najlepiej_wyksztalconymi_mieszkancami_w_polsce">zestawienie NSP 2021</a>; 25–34 lata: <a href="https://raportsdg.stat.gov.pl/en/cel4.html">GUS, raport SDG</a> (14% w 2000 r., 46% obecnie) i <a href="https://forsal.pl/lifestyle/edukacja/artykuly/8727170,wiecej-kobiet-niz-mezczyzn-po-studiach-w-ue-co-pokazuja-dane-z-polski.html">Eurostat za Forsal</a> (kobiety 50,1%, mężczyźni 31,2%).</li>
+      <li>PKB na osobę, Polska i kraje odniesienia: Maddison Project Database 2023, za <a href="https://github.com/owid/co2-data">Our World in Data (owid/co2-data)</a>. Dynamika PKB 2023–2025: GUS, <a href="https://stat.gov.pl/obszary-tematyczne/rachunki-narodowe/roczne-rachunki-narodowe/produkt-krajowy-brutto-w-2024-roku-szacunek-wstepny,2,14.html">szacunek PKB 2024</a> i <a href="https://ssgk.stat.gov.pl/Sytuacja_społeczno-gospodarcza_kraju_2025.pdf">Sytuacja społeczno-gospodarcza kraju 2025</a>; po rewizjach 0,2% (2023), 3,0% (2024) i 3,8% (2025, skorygowany szacunek GUS).</li>
+      <li>PKB na mieszkańca według województw w 2022 r.: <a href="https://stat.gov.pl/files/gfx/portalinformacyjny/pl/defaultaktualnosci/5482/7/7/1/produkt_krajowy_brutto_i_wartosc_dodana_brutto_w_przekroju_regionow_w_2022.pdf">GUS, PKB i wartość dodana brutto w przekroju regionów w 2022 r.</a></li>
+      <li>Bezrobocie: <a href="https://stat.gov.pl/obszary-tematyczne/rynek-pracy/bezrobocie-rejestrowane/stopa-bezrobocia-rejestrowanego-w-latach-1990-2026,4,1.html">GUS, stopa bezrobocia rejestrowanego w latach 1990–2026</a> (stan w grudniu; od 2002 r. wariant b).</li>
+      <li>Emigracja: 1,0 mln (2004), 2,27 mln (2007) czasowo za granicą: <a href="https://stat.gov.pl:443/cps/rde/xbcr/gus/lud_infor_o_rozm_i_kierunk_emigra_z_polski_w_latach_2004_2009.pdf">GUS, 2004–2009</a>; 2,54 mln (2017): <a href="https://stat.gov.pl/obszary-tematyczne/ludnosc/migracje-zagraniczne-ludnosci/informacja-o-rozmiarach-i-kierunkach-czasowej-emigracji-z-polski-w-latach-2004-2017,2,11.html">GUS, 2004–2017</a>.</li>
+      <li>Trwanie życia i umieralność dzieci: Gapminder, za <a href="https://github.com/owid/owid-datasets">Our World in Data (owid-datasets)</a>; 1931–32: 48,2 lat mężczyźni, 51,4 lat kobiety (<a href="https://core.ac.uk/download/80534728.pdf">opracowanie na podstawie tablic GUS</a>); 2024: 74,93 i 82,26 roku (<a href="https://stat.gov.pl/obszary-tematyczne/ludnosc/trwanie-zycia/trwanie-zycia-w-2024-r-,2,19.html">GUS, Trwanie życia w 2024 r.</a>).</li>
+      <li>Wykształcenie: <a href="https://stat.gov.pl/files/gfx/portalinformacyjny/pl/defaultaktualnosci/6494/2/1/1/ludnosc_wedlug_cech_spolecznych_-_wyniki_wstepne_nsp_2021.pdf">GUS, NSP 2021 – wyniki wstępne</a> (23,1% z dyplomem; miasta 27,4%, wieś 16,6%); województwa: <a href="https://www.polskawliczbach.pl/miasta_z_najlepiej_wyksztalconymi_mieszkancami_w_polsce">zestawienie danych NSP 2021</a>; 25–34 lata: <a href="https://raportsdg.stat.gov.pl/en/cel4.html">GUS, raport SDG</a> (14% w 2000 r., 46% obecnie; kobiety 55%, mężczyźni 37%), na podstawie Eurostatu (<a href="https://ec.europa.eu/eurostat/databrowser/view/edat_lfse_03/default/table">edat_lfse_03</a>).</li>
       <li>Studenci: II RP ok. 38–52 tys. (<a href="https://zpe.gov.pl/a/przeczytaj/Dw8agyzaf">ZPE</a>); 0,4 mln w 1990 r., 1,6 mln w 2000 r. (<a href="https://blogs.worldbank.org/en/jobs/poland-s-educational-boom-and-what-it-means-future-employment">Bank Światowy</a>); 1,95 mln w 2005/06 (<a href="https://demagog.org.pl/analizy_i_raporty/szkolnictwo-w-polsce-sprawdzamy-najnowsze-dane-gus/">Demagog za GUS</a>).</li>
-      <li>Analfabetyzm: 33,1% w 1921 r. (<a href="https://www.national-geographic.pl/historia/za-edukacje-w-rzeczpospolitej-zabrano-sie-za-pozno-efekty-bylo-widac-jeszcze-przez-kilka-lat/">National Geographic</a>); 1921 i 1931 dla województw wschodnich i centralnych (<a href="https://bazhum.muzhp.pl/media/texts/studia-theologica-varsaviensia/2007-tom-45-numer-1/studia_theologica_varsaviensia-r2007-t45-n1-s209-222.pdf">Studia Theologica Varsaviensia</a>); województwa w 1931 r. (<a href="https://forum.historia.org.pl/topic/11224-analfabetyzm-w-ii-rp/">zestawienie danych spisu</a>); śląskie 1,5% (<a href="https://en.wikipedia.org/wiki/Silesian_Voivodeship_(1920%E2%80%931939)">Wikipedia</a>).</li>
+      <li>Analfabetyzm 1921 i 1931: <a href="https://delibra.bg.polsl.pl//Content/75635/BCPS-85021_1939_Maly-Rocznik-Statyst.pdf">GUS, Mały Rocznik Statystyczny 1939</a>, tabl. 23 (według płci i wieku) i tabl. 24 (według województw, płci, miast i wsi).</li>
       <li>Struktura zatrudnienia 1921–1995: <a href="https://repozytorium.amu.edu.pl/bitstream/10593/6933/1/12_Alicja_Szuman_Przeobra_enia%20struktury%20spo_eczno-zawodowej_187-202.pdf">A. Szuman, UAM, na podstawie spisów</a>; 2019: 8,7% (<a href="https://bibliotekanauki.pl/chapters/12607394.pdf">Biblioteka Nauki</a>); 2023: 7,6% (<a href="https://zpe.gov.pl/a/struktura-zatrudnienia-i-problem-bezrobocia-w-polsce/Du97R1SFZ">ZPE</a>).</li>
-      <li>Straty II wojny: 5,6–5,8 mln obywateli, w tym ok. 3 mln Żydów (<a href="https://dzieje.pl/node/19273">IPN za dzieje.pl</a>). Emigracja: 2,27 mln czasowo za granicą w 2007 r. (<a href="https://stat.gov.pl:443/cps/rde/xbcr/gus/lud_infor_o_rozm_i_kierunk_emigra_z_polski_w_latach_2004_2010.pdf">GUS</a>).</li>
+      <li>Straty II wojny: 5,6–5,8 mln obywateli, w tym ok. 3 mln Żydów (<a href="https://dzieje.pl/node/19273">IPN za dzieje.pl</a>).</li>
     </ul>
   </section>
   <footer>Model edukacyjny, stan danych: listopad 2026. Link w pasku adresu zapamiętuje wybrany profil. Kod i dane: <a href="https://github.com/312rkc/pokolenia">github.com/312rkc/pokolenia</a>.</footer>
+</div>
+<div class="modal" id="cardModal" hidden role="dialog" aria-modal="true" aria-labelledby="cardH">
+  <div class="modal-box">
+    <div class="modal-row"><h3 id="cardH">Karta wyniku</h3><button class="btn-ghost" id="cardClose" type="button">Zamknij</button></div>
+    <img id="cardImg" alt="Karta z wynikiem wybranego profilu">
+    <div class="modal-row"><a class="btn" id="cardDl" href="#" download="los-rocznika.png">Pobierz PNG</a><span class="muted" id="cardMsg" role="status" style="font-size:13px"></span></div>
+  </div>
 </div>
 <div id="tip" hidden></div>
 <script src="src/series.js"></script>
